@@ -1,1 +1,7 @@
-{}
+{
+  "redisDs": {
+    "name": "redisDS",
+    "connector": "redis",
+    "database": "sharedDB"
+  }
+}
