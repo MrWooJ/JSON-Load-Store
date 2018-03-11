@@ -1,7 +1,7 @@
 {
   "redisDs": {
-    "name": "redisDS",
-    "connector": "redis",
-    "database": "sharedDB"
+    "database": "sharedDB",
+    "name": "redisDs",
+    "connector": "kv-redis"
   }
 }
