@@ -15,6 +15,10 @@
   },
   "config": {
     "dataSource": "redisDs",
+    "public": false
+  },
+  "controller": {
+    "dataSource": null,
     "public": true
   }
 }
