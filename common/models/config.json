@@ -6,32 +6,27 @@
     "validateUpsert": true
   },
   "properties": {
+    "apiKey": {
+      "type": "string",
+      "required": true,
+      "index": true
+    },
     "name": {
       "type": "string",
-      "required": true
-    },
-    "status": {
-      "type": "string",
-      "required": true
+      "required": true,
+      "index": true
     },
     "data": {
       "type": "object",
-      "required": true
-    },
-    "created": {
-      "type": "number",
       "required": true,
-      "default": 0
+      "index": true
     },
-    "updated": {
-      "type": "number",
-      "required": true,
-      "default": 0
-    },
-    "changes": {
-      "type": "number",
-      "required": true,
-      "default": 0
+    "changeSequence": {
+      "type": [
+        "number"
+      ],
+      "required": false,
+      "index": true
     }
   },
   "validations": [],
