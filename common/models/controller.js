@@ -1,4 +1,5 @@
 var app = require('../../server/server')
+var createError = require('http-errors')
 
 module.exports = function(controller) {
 
@@ -6,13 +7,13 @@ module.exports = function(controller) {
 		var date = Math.floor((new Date).getTime())
 		var config = app.models.config
 		if(!model)
-			return cb(new Error('Empty Model'))
+			return cb(createError(400))
 		if(!apiKey)
-			return cb(new Error('Empty ApiKey'))
+			return cb(createError(400))
 		if(!model.name)
-			return cb(new Error('Empty name'))
+			return cb(createError(428))
 		if(!model.data)
-			return cb(new Error('Empty data'))
+			return cb(createError(428))
 		var configModel = {
 			apiKey: apiKey,
 			name: model.name,
@@ -25,7 +26,7 @@ module.exports = function(controller) {
 				return cb(err)
 			for (var i = 0; i < configList.length; i++)
 				if (configList[i].name === model.name)
-					return cb(new Error('duplicate name in model for this user'))
+					return cb(createError(409))
 			config.create(configModel, function(err, newConfigModel) {
 				if (err)
 					return cb(err)
@@ -66,16 +67,16 @@ module.exports = function(controller) {
   controller.retriveModel = function (name, apiKey, cb) {
 		var config = app.models.config
 		if(!name)
-			return cb(new Error('Empty Name'))
+			return cb(createError(400))
 		if(!apiKey)
-			return cb(new Error('Empty ApiKey'))
+			return cb(createError(400))
 		config.find({'where':{'apiKey': apiKey}}, function(err, configList) {
 			if (err)
 				return cb(err)
 			if (configList.length == 0)
-				return cb(new Error('No Model for Retrive'))
+				return cb(createError(404))
 			if (configList.length >= 2)
-				return cb(new Error('Duplicate Model for Retrive'))
+				return cb(createError(409))
 			var retrivedModel = {}
 			var check = false
 			for (var i = 0; i < configList.length; i++) {
@@ -87,7 +88,7 @@ module.exports = function(controller) {
 			if (check == true)
 				return cb(null, retrivedModel)
 			else 
-				return cb(new Error('No Model with this Name for Retrive'))
+				return cb(createError(404))
 		})
   }
 
@@ -110,7 +111,7 @@ module.exports = function(controller) {
     description: 'retrive a json particular config model for this particular user',
     http: {
       path: '/retrive/model/:name',
-      verb: 'POST',
+      verb: 'GET',
       status: 200,
       errorStatus: 400
     },
@@ -124,16 +125,16 @@ module.exports = function(controller) {
 		var date = Math.floor((new Date).getTime())
 		var config = app.models.config
 		if(!name)
-			return cb(new Error('Empty Name'))
+			return cb(createError(400))
 		if(!apiKey)
-			return cb(new Error('Empty ApiKey'))
+			return cb(createError(400))
 		config.find({'where':{'apiKey': apiKey}}, function(err, configList) {
 			if (err)
 				return cb(err)
 			if (configList.length == 0)
-				return cb(new Error('No Model for Update'))
+				return cb(createError(404))
 			if (configList.length >= 2)
-				return cb(new Error('Duplicate Model for Update'))
+				return cb(createError(409))
 			var retrivedModel = {}
 			var check = false
 			for (var i = 0; i < configList.length; i++) {
@@ -149,7 +150,7 @@ module.exports = function(controller) {
 					if (model.name !== particularModel.name) {
 						for (var i = 0; i < configList.length; i++)
 							if (configList[i].name === model.name)
-								return cb(new Error('duplicate name in model for this user'))
+								return cb(createError(409))
 						newModel.name = model.name
 					}
 				}
@@ -163,7 +164,7 @@ module.exports = function(controller) {
 				})	
 			}
 			else 
-				return cb(new Error('No Model with this Name for Retrive'))
+				return cb(createError(404))
 		})
   }
 
@@ -193,7 +194,7 @@ module.exports = function(controller) {
     description: 'update a json particular config model for this particular user (send the whole model)',
     http: {
       path: '/update/model/:name',
-      verb: 'POST',
+      verb: 'PUT',
       status: 200,
       errorStatus: 400
     },
@@ -206,16 +207,16 @@ module.exports = function(controller) {
   controller.removeModel = function (name, apiKey, cb) {
 		var config = app.models.config
 		if(!name)
-			return cb(new Error('Empty Name'))
+			return cb(createError(400))
 		if(!apiKey)
-			return cb(new Error('Empty ApiKey'))
+			return cb(createError(400))
 		config.find({'where':{'apiKey': apiKey}}, function(err, configList) {
 			if (err)
 				return cb(err)
 			if (configList.length == 0)
-				return cb(new Error('No Model for Delete'))
+				return cb(createError(404))
 			if (configList.length >= 2)
-				return cb(new Error('Duplicate Model for Delete'))
+				return cb(createError(409))
 			var retrivedModel = {}
 			var check = false
 			for (var i = 0; i < configList.length; i++) {
@@ -233,7 +234,7 @@ module.exports = function(controller) {
 				})	
 			}
 			else 
-				return cb(new Error('No Model with this Name for Retrive'))
+				return cb(createError(404))
 		})
   }
 
@@ -256,7 +257,7 @@ module.exports = function(controller) {
     description: 'remove a json particular config model for this particular user',
     http: {
       path: '/remove/model/:name',
-      verb: 'POST',
+      verb: 'DELETE',
       status: 200,
       errorStatus: 400
     },
